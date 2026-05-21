@@ -3505,20 +3505,23 @@ document.getElementById('editTextModal18000').value = texto_18000;
                     let selectedDataText = $('#selectedDataText').val(); // Obtém o texto do textarea
 
                     if (selectedDataText !== 'Nenhum selecionado') {
-                    // Insere \n entre </div><div>
-                    let cleanText = selectedDataText.replace(/<\/div>\s*<div>/gi, '</div>\n\n<div>');
+                        // Remove todas as tags <br> ou <br />
+                        selectedDataText = selectedDataText.replace(/<br\s*\/?>/gi, '');
 
-                    // Remove as tags <br> se quiser limpar também
-                    cleanText = cleanText.replace(/<br\s*\/?>/gi, '');
+                        // Adiciona a tag <div><pre> no início e fecha no final
+                        //selectedDataText = `<div><pre style="font-family: Verdana;" wrap="hard">${selectedDataText}</pre></div>`;
 
-                    // Copiar para o clipboard
-                    navigator.clipboard.writeText(cleanText)
-                        .then(() => {
-                            console.log('Texto copiado com sucesso!');
-                        })
-                        .catch(err => {
-                            console.error('Erro ao copiar texto:', err);
-                        });
+                        // Copiar o texto para a área de transferência (clipboard)
+                        const el = document.createElement('textarea');
+                        el.value = selectedDataText;
+
+                        console.log(el.value);
+
+                        document.body.appendChild(el);
+                        el.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(el);
+
                     }
 
                 }
@@ -3590,7 +3593,7 @@ document.getElementById('editTextModal18000').value = texto_18000;
                 // Configurações do editor
                 language: 'pt_br', // Define o idioma como português
                 maxHeight: 850,
-                enter: "div",
+                enter: "br",
                 spellcheck: true,
                 showXPathInStatusbar: false,
                 askBeforePasteHTML: true,
